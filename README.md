@@ -3,6 +3,11 @@
 
 ## Preparation
 
+install Apriltag Package
+```
+sudo apt install ros-noetic-apriltag-ros
+```
+
 download and make explore_lite package
 ```
 cd ~/catkin_ws/src
@@ -12,5 +17,5 @@ git clone https://github.com/hrnr/m-explore.git
 ## To run the turtlebot in Gazebo
 
 ```
-roslaunch mr_final_project turtlebot3_empty_world.launch
+roslaunch mr_final_project turtlebot3_explore.launch
 ```
