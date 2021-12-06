@@ -1,4 +1,5 @@
 # EECE 5550 Mobile Robotics Group 8 Final Project
+![exploration-gif](https://github.com/lhy0807/mr_final_project/blob/master/exploration.gif?raw=true)
 
 ## Preparation
 
