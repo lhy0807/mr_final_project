@@ -22,7 +22,7 @@
   </node>
 
   <!-- generate Apriltag -->
-  <node pkg="gazebo_ros" type="spawn_model" name="spawn_apriltag" args="-sdf -file $(find turtlebot3_mr)/models/Apriltag36_11_00000/model.sdf -model apriltag_marker -x 3.17 -y 3.96 -z 0.54 -R -1.57 " />
+  <node pkg="gazebo_ros" type="spawn_model" name="spawn_apriltag" args="-sdf -file $(find mr_final_project)/models/Apriltag36_11_00000/model.sdf -model apriltag_marker -x 3.17 -y 3.96 -z 0.54 -R -1.57 " />
 
   <!-- TurtleBot3 -->
   <!-- <include file="$(find turtlebot3_bringup)/launch/turtlebot3_remote.launch">
@@ -52,7 +52,7 @@
   <include file="$(find mr_final_project)/launch/apriltag_gazebo.launch"></include>
 
   <!-- EXPLORE -->
-  <!-- <include file="$(find mr_final_project)/launch/explore.launch"></include> -->
+  <include file="$(find mr_final_project)/launch/explore.launch"></include>
 
   <!-- rviz -->
   <group if="$(arg open_rviz)">
