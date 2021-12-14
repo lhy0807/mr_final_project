@@ -1,7 +1,5 @@
 <launch>
 
-  <param name="robot_description" command="$(find xacro)/xacro --inorder $(find mr_final_project)/urdf/turtlebot3_rpi_camera.urdf.xacro" /> 
-
   <include file="$(find turtlebot3_bringup)/launch/turtlebot3_robot.launch" />
 
   <include file="$(find raspicam_node)/launch/camerav2_1280x960_10fps.launch">
