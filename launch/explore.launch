@@ -7,7 +7,7 @@
   <arg name="use_sim" default="false" />
 
   <!-- static tf publisher for laser scan data -->
-  <node pkg="tf" type="static_transform_publisher" name="link1_broadcaster" 
+  <node pkg="tf" type="static_transform_publisher" name="base_scan_transform" 
         args="0 0 0 0 0 0 1 base_footprint base_scan 100" />
   
   <!-- move_base -->

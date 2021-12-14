@@ -7,7 +7,7 @@
   </include>
 
   <!-- static tf publisher for robot to camera -->
-  <node pkg="tf" type="static_transform_publisher" name="link1_broadcaster" 
+  <node pkg="tf" type="static_transform_publisher" name="base_camera_transform" 
         args="0.03 0 0.1 0 0 0 base_footprint camera_link 100" />
 
 
