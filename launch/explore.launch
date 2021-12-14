@@ -6,30 +6,12 @@
   <arg name="odom_topic" default="/odom" />
   <arg name="use_sim" default="false" />
 
-  <param name="robot_description" command="$(find xacro)/xacro --inorder $(find mr_final_project)/urdf/turtlebot3_rpi_camera.urdf.xacro" />
+  <param name="robot_description" command="$(find xacro)/xacro --inorder $(find mr_final_project)/urdf/turtlebot3_rpi_camera.urdf.xacro" /> 
 
-  <!-- using simulation -->
-  <group if="$(arg use_sim)">
-    <!-- load world -->
-    <include file="$(find gazebo_ros)/launch/empty_world.launch">
-      <arg name="world_name" value="$(find mr_final_project)/worlds/crazy_maze.world" />
-      <arg name="paused" value="false" />
-      <arg name="use_sim_time" value="true" />
-      <arg name="gui" value="true" />
-      <arg name="headless" value="false" />
-      <arg name="debug" value="false" />
-    </include>
-
-    <!-- spawn camera -->
-    <node pkg="gazebo_ros" type="spawn_model" name="spawn_urdf" args="-urdf -model turtlebot3_rpi_camera -x 0.5 -y 8.0 -z 0.0 -param robot_description" />
-      <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
-      <param name="publish_frequency" type="double" value="50.0" />
-    </node>
-
-    <!-- generate Apriltag -->
-    <node pkg="gazebo_ros" type="spawn_model" name="spawn_apriltag" args="-sdf -file $(find mr_final_project)/models/Apriltag36_11_00000/model.sdf -model apriltag_marker -x 3.17 -y 3.96 -z 0.54 -R -1.57 " />
-  </group>
-
+  <!-- static tf publisher for laser scan data -->
+  <node pkg="tf" type="static_transform_publisher" name="link1_broadcaster" 
+        args="0 0 0 0 0 0 1 base_footprint base_scan 100" />
+  
   <!-- move_base -->
   <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
     <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS" />
@@ -44,7 +26,8 @@
   </node>
 
   <!-- GMAPPING -->
-  <include file="$(find turtlebot3_slam)/launch/turtlebot3_gmapping.launch">
+  <include file="$(find turtlebot3_slam)/launch/turtlebot3_slam.launch" >
+    <arg name="open_rviz" value="false" />
     <arg name="model" value="$(arg model)" />
     <arg name="configuration_basename" value="$(arg configuration_basename)" />
   </include>
@@ -67,6 +50,28 @@
   <!-- rviz -->
   <group if="$(arg open_rviz)">
     <node pkg="rviz" type="rviz" name="rviz" required="true" args="-d $(find mr_final_project)/rviz/turtlebot3.rviz" />
+  </group>
+
+  <!-- using simulation -->
+  <group if="$(arg use_sim)">
+    <!-- load world -->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+      <arg name="world_name" value="$(find mr_final_project)/worlds/crazy_maze.world" />
+      <arg name="paused" value="false" />
+      <arg name="use_sim_time" value="true" />
+      <arg name="gui" value="true" />
+      <arg name="headless" value="false" />
+      <arg name="debug" value="false" />
+    </include>
+
+    <!-- spawn camera -->
+    <node pkg="gazebo_ros" type="spawn_model" name="spawn_urdf" args="-urdf -model turtlebot3_rpi_camera -x 0.5 -y 8.0 -z 0.0 -param robot_description" />
+      <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
+      <param name="publish_frequency" type="double" value="50.0" />
+    </node>
+
+    <!-- generate Apriltag -->
+    <node pkg="gazebo_ros" type="spawn_model" name="spawn_apriltag" args="-sdf -file $(find mr_final_project)/models/Apriltag36_11_00000/model.sdf -model apriltag_marker -x 3.17 -y 3.96 -z 0.54 -R -1.57 " />
   </group>
 
 </launch>

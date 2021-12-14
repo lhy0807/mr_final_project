@@ -1,10 +1,17 @@
 <launch>
 
+  <param name="robot_description" command="$(find xacro)/xacro --inorder $(find mr_final_project)/urdf/turtlebot3_rpi_camera.urdf.xacro" /> 
+
   <include file="$(find turtlebot3_bringup)/launch/turtlebot3_robot.launch" />
 
   <include file="$(find raspicam_node)/launch/camerav2_1280x960_10fps.launch">
     <arg name="enable_raw" value="true" />
   </include>
+
+  <!-- static tf publisher for robot to camera -->
+  <node pkg="tf" type="static_transform_publisher" name="link1_broadcaster" 
+        args="0.03 0 0.1 0 0 0 base_footprint camera_link 100" />
+
 
   <rosparam command="load" file="$(find mr_final_project)/config/settings.yaml" ns="apriltag_ros_continuous_node" />
   <rosparam command="load" file="$(find mr_final_project)/config/tags.yaml" ns="apriltag_ros_continuous_node" />
@@ -16,6 +23,5 @@
     <param name="camera_frame" type="str" value="camera_link" />
     <param name="publish_tag_detections_image" type="bool" value="true" />      <!-- default: false -->
   </node>
-
 
 </launch>
