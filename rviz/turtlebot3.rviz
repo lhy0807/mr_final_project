@@ -8,7 +8,6 @@ Panels:
         - /TF1/Frames1
         - /Map1
         - /Camera1
-        - /Camera1/Status1
       Splitter Ratio: 0.33837687969207764
     Tree Height: 477
   - Class: rviz/Selection
@@ -123,6 +122,8 @@ Visualization Manager:
           Value: false
         odom:
           Value: false
+        raspicam:
+          Value: true
         wheel_left_link:
           Value: false
         wheel_right_link:
@@ -147,6 +148,8 @@ Visualization Manager:
                 wheel_right_link:
                   {}
               base_scan:
+                {}
+              raspicam:
                 {}
       Update Interval: 0
       Value: true
@@ -235,7 +238,7 @@ Visualization Manager:
     - Class: rviz/Camera
       Enabled: true
       Image Rendering: background and overlay
-      Image Topic: /tag_detections_image
+      Image Topic: /raspicam_node/image
       Name: Camera
       Overlay Alpha: 0.5
       Queue Size: 2
