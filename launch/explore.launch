@@ -30,25 +30,6 @@
     <node pkg="gazebo_ros" type="spawn_model" name="spawn_apriltag" args="-sdf -file $(find mr_final_project)/models/Apriltag36_11_00000/model.sdf -model apriltag_marker -x 3.17 -y 3.96 -z 0.54 -R -1.57 " />
   </group>
 
-  <!-- using real hardware -->
-  <!-- <group unless="$(arg use_sim)">
-    <include file="$(find turtlebot3_bringup)/launch/turtlebot3_remote.launch">
-      <arg name="model" value="$(arg model)" />
-    </include>
-  </group> -->
-
-  <rosparam command="load" file="$(find mr_final_project)/config/settings.yaml" ns="apriltag_ros_continuous_node" />
-  <rosparam command="load" file="$(find mr_final_project)/config/tags.yaml" ns="apriltag_ros_continuous_node" />
-  <node pkg="apriltag_ros" type="apriltag_ros_continuous_node" name="apriltag_ros_continuous_node" clear_params="true" output="screen" launch-prefix="" >
-    <!-- Remap topics from those used in code to those on the ROS network -->
-    <remap from="image_rect" to="/raspicam_node/image" />
-    <remap from="camera_info" to="/raspicam_node/camera_info" />
-
-    <param name="camera_frame" type="str" value="camera_link" />
-    <param name="publish_tag_detections_image" type="bool" value="true" />      <!-- default: false -->
-  </node>
-
-
   <!-- move_base -->
   <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
     <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS" />
@@ -67,9 +48,6 @@
     <arg name="model" value="$(arg model)" />
     <arg name="configuration_basename" value="$(arg configuration_basename)" />
   </include>
-
-  <!-- Apriltag -->
-  <include file="$(find mr_final_project)/launch/launch_camera.launch" />
 
   <!-- EXPLORE -->
   <node pkg="explore_lite" type="explore" respawn="false" name="explore" output="screen">
