@@ -8,7 +8,7 @@
 
   <!-- static tf publisher for robot to camera -->
   <node pkg="tf" type="static_transform_publisher" name="base_camera_transform" 
-        args="0.03 0 0.1 0 0 0 base_footprint camera_link 100" />
+        args="0.03 0 0.1 0 0 0 base_footprint raspicam 100" />
 
 
   <rosparam command="load" file="$(find mr_final_project)/config/settings.yaml" ns="apriltag_ros_continuous_node" />
@@ -18,7 +18,7 @@
     <remap from="image_rect" to="/raspicam_node/image" />
     <remap from="camera_info" to="/raspicam_node/camera_info" />
 
-    <param name="camera_frame" type="str" value="camera_link" />
+    <param name="camera_frame" type="str" value="raspicam" />
     <param name="publish_tag_detections_image" type="bool" value="true" />      <!-- default: false -->
   </node>
 
