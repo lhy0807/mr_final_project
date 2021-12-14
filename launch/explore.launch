@@ -8,11 +8,11 @@
 
   <!-- static tf publisher for laser scan data -->
   <node pkg="tf" type="static_transform_publisher" name="base_scan_transform" 
-        args="0 0 0 0 0 0 1 base_footprint base_scan 100" />
+        args="0 0 0 0 0 0 base_footprint base_scan 100" />
   
   <!-- static tf publisher for base footprint -->
   <node pkg="tf" type="static_transform_publisher" name="base_footprint_transform" 
-        args="0 0 0 0 0 0 0 base_link base_footprint 100" />
+        args="0 0 0 0 0 0 base_link base_footprint 100" />
 
   
   <!-- move_base -->
