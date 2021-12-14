@@ -64,9 +64,9 @@
 
     <!-- spawn camera -->
     <node pkg="gazebo_ros" type="spawn_model" name="spawn_urdf" args="-urdf -model turtlebot3_rpi_camera -x 0.5 -y 8.0 -z 0.0 -param robot_description" />
-      <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
+    <!-- <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
       <param name="publish_frequency" type="double" value="50.0" />
-    </node>
+    </node> -->
 
     <!-- generate Apriltag -->
     <node pkg="gazebo_ros" type="spawn_model" name="spawn_apriltag" args="-sdf -file $(find mr_final_project)/models/Apriltag36_11_00000/model.sdf -model apriltag_marker -x 3.17 -y 3.96 -z 0.54 -R -1.57 " />
