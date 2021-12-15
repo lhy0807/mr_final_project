@@ -8,14 +8,17 @@ from apriltag_ros.msg import AprilTagDetectionArray
 from geometry_msgs.msg import TransformStamped
 from visualization_msgs.msg import MarkerArray, Marker
 
-
 class TagsUpdater:
 
     def __init__(self):
+        rospy.sleep(1.)
         num_tags = 20
         self.tag_estimates = [None for _ in range(num_tags)]
         self.tags_sub = rospy.Subscriber("tag_detections", \
             AprilTagDetectionArray, self.tags_cb)
+        self.vis_pub = rospy.Publisher("visualization_marker", Marker, \
+            queue_size=1)
+
         self.tf_buffer = tf2_ros.Buffer()
         self.tf_broadcaster = tf2_ros.TransformBroadcaster()
         self.tf_listener = tf2_ros.TransformListener(self.tf_buffer)
@@ -44,6 +47,7 @@ class TagsUpdater:
             # map_frame_transform = self.tf_buffer.lookupTransform(\
             #     '/map', '/' + frame, rospy.Time(0))
             map_tag_pose = self.transform_pose(frame_tag_pose, frame, 'map')
+
             self.tag_estimates[tag_id] = map_tag_pose
             print(map_tag_pose)
         for i, est in enumerate(self.tag_estimates):
@@ -51,6 +55,7 @@ class TagsUpdater:
                 t = TransformStamped()
                 t.header.stamp = rospy.Time.now()
                 t.header.frame_id = 'map'
+
                 t.child_frame_id = 'map_tag_' + str(i)
                 t.transform.translation.x = self.tag_estimates[i].position.z
                 t.transform.translation.y = self.tag_estimates[i].position.x
