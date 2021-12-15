@@ -11,6 +11,12 @@
   <arg name="y_pos" default="-0.5"/>
   <arg name="z_pos" default="0.0"/>
 
+  <!-- goal generator node -->
+  <node pkg="mr_final_project" type="goal_gen.py" name="goal_gen" required="true" output="screen" />
+
+  <!-- tag tracker node -->
+  <node pkg="mr_final_project" type="tag_tracker.py" name="tag_tracker" required="true" output="screen" />
+
   <!-- static tf publisher for laser scan data -->
   <node pkg="tf" type="static_transform_publisher" name="base_scan_transform" 
         args="0 0 0 0 0 0 1 base_link base_scan 100" />
@@ -38,12 +44,7 @@
 
   <!-- using simulation -->
   <group if="$(arg use_sim)">
-    <!-- goal generator node -->
-    <node pkg="mr_final_project" type="goal_gen.py" name="goal_gen" required="true" output="screen" />
-
-    <!-- tag tracker node -->
-    <node pkg="mr_final_project" type="tag_tracker.py" name="tag_tracker" required="true" output="screen" />
-
+    
     <!-- simulated gazebo world -->
     <include file="$(find gazebo_ros)/launch/empty_world.launch">
       <arg name="world_name" value="$(find turtlebot3_gazebo)/worlds/turtlebot3_world.world"/>
