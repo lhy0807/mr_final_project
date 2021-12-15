@@ -18,7 +18,7 @@ class TagsUpdater:
         self.tf_listener = tf2_ros.TransformListener(self.tf_buffer)
         while True:
             try:
-                _ = self.tf_buffer.lookupTransform('/map', '/base_link', \
+                _ = self.tf_buffer.lookup_transform('/map', '/base_link', \
                     rospy.Time(0))
                 break
             except (tf2_ros.LookupException, tf2_ros.ConnectivityException, \
