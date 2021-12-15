@@ -39,6 +39,11 @@ class TagsUpdater:
         for tag in tags.detections:
             # Get tag info
             tag_id = tag.id[0]
+
+            # do not update the tag pose if detected before
+            if self.tag_estimates[tag_id]:
+                continue
+
             tag_name = 'map_tag_' + str(tag_id)
             frame_tag_pose = tag.pose.pose.pose
             frame = tag.pose.header.frame_id

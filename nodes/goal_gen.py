@@ -9,6 +9,11 @@ from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 from nav_msgs.msg import OccupancyGrid
 from visualization_msgs.msg import MarkerArray, Marker
 
+class SimpleGoalState:
+    PENDING = 0
+    ACTIVE = 1
+    DONE = 2
+
 class GoalGen:
 
     def __init__(self):
@@ -117,9 +122,14 @@ class GoalGen:
                 self.vis_pub.publish(marker)
 
                 self.move_base_client.send_goal(goal)
-                wait = self.move_base_client.wait_for_result()
+
+                wait = self.move_base_client.wait_for_result(rospy.Duration(5.0))
+                while (not rospy.is_shutdown()) and self.move_base_client.get_state() == SimpleGoalState.ACTIVE:
+                    wait = self.move_base_client.wait_for_result(rospy.Duration(2.0))
+                    
                 if not wait:
-                    rospy.logerr("Goal not sent!")
+                    self.move_base_client.cancel_all_goals()
+                    rospy.logerr("Goal not achieved!")
                     return False
                 success = self.move_base_client.get_result()
 
