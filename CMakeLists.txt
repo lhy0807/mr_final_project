@@ -161,6 +161,7 @@ include_directories(
 ## in contrast to setup.py, you can choose the destination
 catkin_install_python(PROGRAMS
   nodes/tag_tracker.py
+  nodes/goal_gen.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

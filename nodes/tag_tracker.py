@@ -2,9 +2,10 @@
 
 import rospy
 import tf2_ros
-from apriltag_ros.msg import AprilTagDetectionArray
-from geometry_msgs.msg import Pose, TransformStamped
 import tf2_geometry_msgs
+
+from apriltag_ros.msg import AprilTagDetectionArray
+from geometry_msgs.msg import TransformStamped
 
 class TagsUpdater:
 
