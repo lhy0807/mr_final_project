@@ -16,7 +16,7 @@
 
   
   <!-- move_base -->
-  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base">
     <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS" />
     <rosparam file="$(find turtlebot3_navigation)/param/costmap_common_params_$(arg model).yaml" command="load" ns="global_costmap" />
     <rosparam file="$(find turtlebot3_navigation)/param/costmap_common_params_$(arg model).yaml" command="load" ns="local_costmap" />
@@ -36,7 +36,7 @@
   </include>
 
   <!-- EXPLORE -->
-  <node pkg="explore_lite" type="explore" respawn="false" name="explore" output="screen">
+  <node pkg="explore_lite" type="explore" respawn="false" name="explore">
     <param name="robot_base_frame" value="base_link" />
     <param name="costmap_topic" value="map" />
     <param name="costmap_updates_topic" value="map_updates" />
@@ -57,18 +57,21 @@
 
   <!-- using simulation -->
   <group if="$(arg use_sim)">
+    <node pkg="mr_final_project" type="goal_gen.py" name="goal_gen" required="true" output="screen"/>
     <!-- load world -->
-    <include file="$(find gazebo_ros)/launch/empty_world.launch">
-      <arg name="world_name" value="$(find mr_final_project)/worlds/crazy_maze.world" />
-      <arg name="paused" value="false" />
+    <!-- <include file="$(find gazebo_ros)/launch/empty_world.launch"> -->
+      <!-- <arg name="world_name" value="$(find mr_final_project)/worlds/crazy_maze.world" /> -->
+      <!-- <arg name="paused" value="false" />
       <arg name="use_sim_time" value="true" />
       <arg name="gui" value="true" />
       <arg name="headless" value="false" />
-      <arg name="debug" value="false" />
-    </include>
+      <arg name="debug" value="false" /> -->
+    <!-- </include> -->
+
+    <include file="$(find turtlebot3_gazebo)/launch/turtlebot3_world.launch" />
 
     <!-- spawn camera -->
-    <node pkg="gazebo_ros" type="spawn_model" name="spawn_urdf" args="-urdf -model turtlebot3_rpi_camera -x 0.5 -y 8.0 -z 0.0 -param robot_description" />
+    <!-- <node pkg="gazebo_ros" type="spawn_model" name="spawn_urdf" args="-urdf -model turtlebot3_rpi_camera -x 0.5 -y 8.0 -z 0.0 -param robot_description" /> -->
     <!-- <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
       <param name="publish_frequency" type="double" value="50.0" />
     </node> -->
