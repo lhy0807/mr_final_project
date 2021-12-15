@@ -47,11 +47,11 @@ class TagsUpdater:
                 t = TransformStamped()
                 t.header.stamp = rospy.Time.now()
                 t.header.frame_id = 'map'
-                t.child_frame_id = tag_name
+                t.child_frame_id = 'map_tag_' + str(i)
                 t.transform.translation.x = self.tag_estimates[i].position.x
                 t.transform.translation.y = self.tag_estimates[i].position.y
                 t.transform.translation.z = self.tag_estimates[i].position.z
-                t.transform.translation = self.tag_estimates[i].orientation
+                t.transform.rotation = self.tag_estimates[i].orientation
                 self.tf_broadcaster.sendTransform(t)
 
 
