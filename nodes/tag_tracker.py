@@ -18,7 +18,7 @@ class TagsUpdater:
         self.tf_listener = tf2_ros.TransformListener(self.tf_buffer)
         while True:
             try:
-                _ = self.tf_buffer.lookup_transform('/map', '/base_link', \
+                _ = self.tf_buffer.lookup_transform('map', 'base_link', \
                     rospy.Time(0))
                 break
             except (tf2_ros.LookupException, tf2_ros.ConnectivityException, \
@@ -28,12 +28,12 @@ class TagsUpdater:
 
     def tags_cb(self, tags):
         # iterate through tags
-        for tag in tags:
+        for tag in tags.detections:
             # Get tag info
             tag_id = tag.id[0]
             tag_name = 'map_tag_' + str(tag_id)
             frame_tag_pose = tag.pose.pose.pose
-            frame = tag.pose.frame_id
+            frame = tag.pose.header.frame_id
 
             # Get transform from map to tag
             # map_frame_transform = self.tf_buffer.lookupTransform(\
@@ -42,12 +42,14 @@ class TagsUpdater:
             self.tag_estimates[tag_id] = map_tag_pose
         
         for i, est in enumerate(self.tag_estimates):
-            if not est:
+            if est:
                 t = TransformStamped()
                 t.header.stamp = rospy.Time.now()
                 t.header.frame_id = 'map'
                 t.child_frame_id = tag_name
-                t.transform.translation = self.tag_estimates[i].translation
+                t.transform.translation.x = self.tag_estimates[i].position.x
+                t.transform.translation.x = self.tag_estimates[i].position.y
+                t.transform.translation.x = self.tag_estimates[i].position.z
                 t.transform.translation = self.tag_estimates[i].rotation
                 self.tf_broadcaster.sendTransform(t)
 
