@@ -83,6 +83,8 @@ class GoalGen:
                         break
                 if resample_flag:
                     break
+            if resample_flag:
+                continue
 
 
             # make sure location in map is likely unoccupied
