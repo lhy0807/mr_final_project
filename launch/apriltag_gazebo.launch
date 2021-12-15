@@ -1,9 +1,9 @@
 <launch>
   <arg name="launch_prefix" default="" /> <!-- set to value="gdbserver localhost:10000" for remote debugging -->
   <arg name="node_namespace" default="apriltag_ros_continuous_node" />
-  <arg name="camera_name" default="/camera/rgb" />
-  <arg name="camera_frame" default="camera_rgb_optical_frame" />
-  <arg name="image_topic" default="image_raw" />
+  <arg name="camera_name" default="raspicam_node" />
+  <arg name="camera_frame" default="raspicam" />
+  <arg name="image_topic" default="image" />
 
   <!-- Set parameters -->
   <rosparam command="load" file="$(find mr_final_project)/config/settings.yaml" ns="$(arg node_namespace)" />
