@@ -57,6 +57,8 @@ class GoalGen:
         self.map_origin = occ_grid.info.origin
         self.map = np.array(occ_grid.data).reshape((self.map_height, \
                                                     self.map_width))
+
+        self.map = np.transpose(self.map)
         
         self.time_since_last_frontier_msg = rospy.get_time() - \
             self.last_frontier_msg_time
