@@ -9,6 +9,11 @@ from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 from nav_msgs.msg import OccupancyGrid
 from visualization_msgs.msg import MarkerArray, Marker
 
+class SimpleGoalState:
+    PENDING = 0
+    ACTIVE = 1
+    DONE = 2
+
 class GoalGen:
 
     def __init__(self):
@@ -26,6 +31,8 @@ class GoalGen:
 
         # pubs and subs
         rospy.sleep(1.)
+        self.vis_pub = rospy.Publisher("visualization_marker", Marker, \
+            queue_size=1)
         self.cmd_vel_pub = rospy.Publisher("/cmd_vel", Twist, queue_size=1)
         self.frontier_sub = rospy.Subscriber("/explore/frontiers", \
             MarkerArray, self.frontier_cb)
@@ -33,8 +40,6 @@ class GoalGen:
         self.move_base_client = actionlib.SimpleActionClient('move_base', \
             MoveBaseAction)
         self.move_base_client.wait_for_server()
-        self.vis_pub = rospy.Publisher("visualization_marker", Marker, \
-            queue_size=1)
 
         # message to send when we want to spin
         self.spin_msg = Twist()
@@ -44,16 +49,16 @@ class GoalGen:
     def frontier_cb(self, data):
         if data:
             self.last_frontier_msg_time = rospy.get_time()
-        else:
-            self.last_frontier_msg_time = rospy.get_time()
             
     def map_cb(self, occ_grid):
         self.map_resolution = occ_grid.info.resolution
         self.map_width = occ_grid.info.width
         self.map_height = occ_grid.info.height
         self.map_origin = occ_grid.info.origin
-        self.map = np.array(occ_grid.data).reshape((self.map_width, \
-                                                    self.map_height))
+        self.map = np.array(occ_grid.data).reshape((self.map_height, \
+                                                    self.map_width))
+
+        self.map = np.transpose(self.map)
         
         self.time_since_last_frontier_msg = rospy.get_time() - \
             self.last_frontier_msg_time
@@ -65,24 +70,21 @@ class GoalGen:
                 rospy.loginfo("Didn't send goal or action didn't work!")
 
     def go_to_random_goal(self):
-        while True:
+        foo = True
+        while foo:
             # get random index for map
             rand_h = np.random.randint(0, self.map_height)
             rand_w = np.random.randint(0, self.map_width)
-            map_val = self.map[rand_h, rand_w]
-
-            if map_val == -1 or map_val >= 50:
-                continue
 
             # ignore positions too close to obstacles
-            n = round(.3 / self.map_resolution)
+            n = round(.3 / self.map_resolution) # how many cells per 0.3 meter
             min_h = max(0, rand_h - n)
             max_h = min(self.map_height, rand_h + n)
             min_w = max(0, rand_w - n)
             max_w = min(self.map_width, rand_w + n)
             resample_flag = False
-            for i in range(min_w, max_w):
-                for j in range(min_h, max_h):
+            for i in range(min_h, max_h):
+                for j in range(min_w, max_w):
                     if self.map[i, j] == -1 or self.map[i, j] >= 80:
                         resample_flag = True
                     if resample_flag:
@@ -94,11 +96,12 @@ class GoalGen:
 
 
             # make sure location in map is likely unoccupied
-            if self.map[rand_w, rand_h] >= 0 and self.map[rand_w, rand_h] <= 10:
+            if self.map[rand_h, rand_w] >= 0 and self.map[rand_h, rand_w] <= 10:
+                foo = False
                 new_x = self.map_origin.position.x + \
-                    rand_w * self.map_resolution
-                new_y = self.map_origin.position.y + \
                     rand_h * self.map_resolution
+                new_y = self.map_origin.position.y + \
+                    rand_w * self.map_resolution
                 goal = MoveBaseGoal()
                 goal.target_pose.header.frame_id = "map"
                 goal.target_pose.header.stamp = rospy.Time.now()
@@ -123,12 +126,16 @@ class GoalGen:
                 self.vis_pub.publish(marker)
 
                 self.move_base_client.send_goal(goal)
+
                 wait = self.move_base_client.wait_for_result()
+                    
                 if not wait:
-                    rospy.logerr("Goal not sent!")
+                    self.move_base_client.cancel_all_goals()
+                    rospy.logerr("Goal not achieved!")
                     return False
                 success = self.move_base_client.get_result()
 
+                self.move_base_client.cancel_all_goals()
                 # spin in circle for a brief period of time
                 start_time = rospy.get_time()
                 while rospy.get_time() - start_time < 7.0:
