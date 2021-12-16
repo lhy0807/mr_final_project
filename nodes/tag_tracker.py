@@ -41,8 +41,8 @@ class TagsUpdater:
             tag_id = tag.id[0]
 
             # do not update the tag pose if detected before
-            if self.tag_estimates[tag_id]:
-                continue
+            # if self.tag_estimates[tag_id]:
+            #     continue
 
             tag_name = 'map_tag_' + str(tag_id)
             frame_tag_pose = tag.pose.pose.pose
@@ -50,7 +50,7 @@ class TagsUpdater:
 
             # Get transform from map to tag
             map_tag_pose = self.transform_pose(frame_tag_pose, frame, 'map')
-
+            print(map_tag_pose)
             self.tag_estimates[tag_id] = map_tag_pose
 
         for i, est in enumerate(self.tag_estimates):
@@ -60,9 +60,7 @@ class TagsUpdater:
                 t.header.frame_id = 'map'
 
                 t.child_frame_id = 'map_tag_' + str(i)
-                t.transform.translation.x = self.tag_estimates[i].position.z
-                t.transform.translation.y = self.tag_estimates[i].position.x
-                t.transform.translation.z = self.tag_estimates[i].position.y
+                t.transform.translation = self.tag_estimates[i].position
                 t.transform.rotation = self.tag_estimates[i].orientation
                 self.tf_broadcaster.sendTransform(t)
 
@@ -73,10 +71,7 @@ class TagsUpdater:
                 marker.id = i
                 marker.type = marker.SPHERE
                 marker.action = marker.ADD
-                marker.pose.position.x = self.tag_estimates[i].position.z
-                marker.pose.position.y = self.tag_estimates[i].position.x
-                marker.pose.position.z = self.tag_estimates[i].position.y
-                marker.pose.orientation = self.tag_estimates[i].orientation
+                marker.pose = self.tag_estimates[i]
                 marker.scale.x = 0.20
                 marker.scale.y = 0.20
                 marker.scale.z = 0.20
@@ -93,6 +88,7 @@ class TagsUpdater:
         pose_stamped.pose = input_pose
         pose_stamped.header.frame_id = init_frame
         pose_stamped.header.stamp = rospy.Time.now()
+        pose_stamped.header.frame_id = "camera_rgb_optical_frame"
         try:
             # ** It is important to wait for the listener to start listening. Hence the rospy.Duration(1)
             output_pose_stamped = self.tf_buffer.transform(pose_stamped, \
