@@ -14,6 +14,8 @@
   <node pkg="tf" type="static_transform_publisher" name="base_camera_transform" 
         args="0.03 0 0.1 0 0 0 base_link raspicam 100" />
 
+  <node pkg="tf" type="static_transform_publisher" name="base_camera_transform" 
+        args="0.0 0.0 0.0 1.57 0 1.57 raspicam camera_rgb_optical_frame 100" />
 
   <rosparam command="load" file="$(find mr_final_project)/config/settings.yaml" ns="apriltag_ros_continuous_node" />
   <rosparam command="load" file="$(find mr_final_project)/config/tags.yaml" ns="apriltag_ros_continuous_node" />
@@ -21,8 +23,7 @@
     <!-- Remap topics from those used in code to those on the ROS network -->
     <remap from="image_rect" to="/raspicam_node/image" />
     <remap from="camera_info" to="/raspicam_node/camera_info" />
-
-    <param name="camera_frame" type="str" value="raspicam" />
+    <!-- <param name="camera_frame" type="str" value="raspicam" /> -->
     <param name="publish_tag_detections_image" type="bool" value="true" />      <!-- default: false -->
   </node>
 
