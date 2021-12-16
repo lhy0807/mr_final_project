@@ -68,6 +68,9 @@ class GoalGen:
             rand_h = np.random.randint(0, self.map_height)
             rand_w = np.random.randint(0, self.map_width)
 
+            if (rand_h == -1 or rand_h >= 50 or rand_w == -1 or rand_w >= 50):
+                continue
+
             # ignore positions too close to obstacles
             n = round(.3 / self.map_resolution)
             min_h = max(0, rand_h - n)
