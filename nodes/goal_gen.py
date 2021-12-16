@@ -125,9 +125,7 @@ class GoalGen:
 
                 self.move_base_client.send_goal(goal)
 
-                wait = self.move_base_client.wait_for_result(rospy.Duration(5.0))
-                while (not rospy.is_shutdown()) and self.move_base_client.get_state() == SimpleGoalState.ACTIVE:
-                    wait = self.move_base_client.wait_for_result(rospy.Duration(2.0))
+                wait = self.move_base_client.wait_for_result()
                     
                 if not wait:
                     self.move_base_client.cancel_all_goals()
