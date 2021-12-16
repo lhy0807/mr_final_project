@@ -43,7 +43,7 @@ class GoalGen:
 
         # message to send when we want to spin
         self.spin_msg = Twist()
-        self.spin_msg.angular.z = 1.0
+        self.spin_msg.angular.z = 0.5
         
         
     def frontier_cb(self, data):
@@ -138,7 +138,7 @@ class GoalGen:
                 self.move_base_client.cancel_all_goals()
                 # spin in circle for a brief period of time
                 start_time = rospy.get_time()
-                while rospy.get_time() - start_time < 7.0:
+                while rospy.get_time() - start_time < 15.0:
                     self.cmd_vel_pub.publish(self.spin_msg)
                 return success
 

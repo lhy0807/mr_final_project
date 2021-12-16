@@ -41,10 +41,14 @@ class TagsUpdater:
             frame_tag_tf = tf2_geometry_msgs.PoseStamped()
             frame_tag_tf.pose = tag.pose.pose.pose
             frame_tag_tf.header = tag.pose.header
+            map_tag_tf = None
             try:
                 map_tag_tf = self.tf_buffer.transform(frame_tag_tf, "map")
             except:
                 pass
+            
+            if map_tag_tf is None:
+                continue
 
             marker = Marker()
             marker.header.frame_id = "map"
@@ -53,7 +57,9 @@ class TagsUpdater:
             marker.id = 0
             marker.type = marker.SPHERE
             marker.action = marker.ADD
-            marker.pose = map_tag_tf.pose
+            marker.pose.position.x = map_tag_tf.pose.position.z
+            marker.pose.position.y = map_tag_tf.pose.position.x
+            marker.pose.position.z = map_tag_tf.pose.position.y
             marker.scale.x = 0.25
             marker.scale.y = 0.25
             marker.scale.z = 0.25
