@@ -31,6 +31,8 @@ class GoalGen:
 
         # pubs and subs
         rospy.sleep(1.)
+        self.vis_pub = rospy.Publisher("visualization_marker", Marker, \
+            queue_size=1)
         self.cmd_vel_pub = rospy.Publisher("/cmd_vel", Twist, queue_size=1)
         self.frontier_sub = rospy.Subscriber("/explore/frontiers", \
             MarkerArray, self.frontier_cb)
@@ -38,8 +40,6 @@ class GoalGen:
         self.move_base_client = actionlib.SimpleActionClient('move_base', \
             MoveBaseAction)
         self.move_base_client.wait_for_server()
-        self.vis_pub = rospy.Publisher("visualization_marker", Marker, \
-            queue_size=1)
 
         # message to send when we want to spin
         self.spin_msg = Twist()
@@ -68,13 +68,14 @@ class GoalGen:
                 rospy.loginfo("Didn't send goal or action didn't work!")
 
     def go_to_random_goal(self):
-        while True:
+        foo = True
+        while foo:
             # get random index for map
             rand_h = np.random.randint(0, self.map_height)
             rand_w = np.random.randint(0, self.map_width)
 
             # ignore positions too close to obstacles
-            n = round(.3 / self.map_resolution)
+            n = round(.3 / self.map_resolution) # how many cells per 0.3 meter
             min_h = max(0, rand_h - n)
             max_h = min(self.map_height, rand_h + n)
             min_w = max(0, rand_w - n)
@@ -94,6 +95,7 @@ class GoalGen:
 
             # make sure location in map is likely unoccupied
             if self.map[rand_h, rand_w] >= 0 and self.map[rand_h, rand_w] <= 10:
+                foo = False
                 new_x = self.map_origin.position.x + \
                     rand_h * self.map_resolution
                 new_y = self.map_origin.position.y + \
