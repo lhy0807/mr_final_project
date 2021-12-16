@@ -14,7 +14,10 @@ standalone_tags:
     {id: 11, size: 0.170, name: 'tag_11'},
     {id: 12, size: 0.170, name: 'tag_12'},
     {id: 13, size: 0.170, name: 'tag_13'},
-    {id: 14, size: 0.170, name: 'tag_14'}
+    {id: 14, size: 0.170, name: 'tag_14'},
+    {id: 15, size: 0.170, name: 'tag_15'},
+    {id: 16, size: 0.170, name: 'tag_16'},
+    {id: 17, size: 0.170, name: 'tag_17'}
   ]
 tag_bundles:
   [
