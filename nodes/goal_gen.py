@@ -135,6 +135,7 @@ class GoalGen:
                     return False
                 success = self.move_base_client.get_result()
 
+                self.move_base_client.cancel_all_goals()
                 # spin in circle for a brief period of time
                 start_time = rospy.get_time()
                 while rospy.get_time() - start_time < 7.0:
