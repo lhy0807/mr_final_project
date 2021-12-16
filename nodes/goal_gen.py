@@ -44,14 +44,16 @@ class GoalGen:
     def frontier_cb(self, data):
         if data:
             self.last_frontier_msg_time = rospy.get_time()
+        else:
+            self.last_frontier_msg_time = rospy.get_time()
             
     def map_cb(self, occ_grid):
         self.map_resolution = occ_grid.info.resolution
         self.map_width = occ_grid.info.width
         self.map_height = occ_grid.info.height
         self.map_origin = occ_grid.info.origin
-        self.map = np.array(occ_grid.data).reshape((self.map_height, \
-                                                    self.map_width))
+        self.map = np.array(occ_grid.data).reshape((self.map_width, \
+                                                    self.map_height))
         
         self.time_since_last_frontier_msg = rospy.get_time() - \
             self.last_frontier_msg_time
@@ -79,8 +81,8 @@ class GoalGen:
             min_w = max(0, rand_w - n)
             max_w = min(self.map_width, rand_w + n)
             resample_flag = False
-            for i in range(min_h, max_h):
-                for j in range(min_w, max_w):
+            for i in range(min_w, max_w):
+                for j in range(min_h, max_h):
                     if self.map[i, j] == -1 or self.map[i, j] >= 80:
                         resample_flag = True
                     if resample_flag:
@@ -92,11 +94,11 @@ class GoalGen:
 
 
             # make sure location in map is likely unoccupied
-            if self.map[rand_h, rand_w] >= 0 and self.map[rand_h, rand_w] <= 10:
+            if self.map[rand_w, rand_h] >= 0 and self.map[rand_w, rand_h] <= 10:
                 new_x = self.map_origin.position.x + \
-                    rand_h * self.map_resolution
-                new_y = self.map_origin.position.y + \
                     rand_w * self.map_resolution
+                new_y = self.map_origin.position.y + \
+                    rand_h * self.map_resolution
                 goal = MoveBaseGoal()
                 goal.target_pose.header.frame_id = "map"
                 goal.target_pose.header.stamp = rospy.Time.now()
