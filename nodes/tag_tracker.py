@@ -35,6 +35,7 @@ class TagsUpdater:
     def tags_cb(self, tags):
         # iterate through tags
         for tag in tags.detections:
+            # print(tag)
             # Get tag info
             tag_id = tag.id[0]
             tag_name = 'map_tag_' + str(tag_id)
@@ -60,6 +61,7 @@ class TagsUpdater:
             marker.pose.position.x = map_tag_tf.pose.position.z
             marker.pose.position.y = map_tag_tf.pose.position.x
             marker.pose.position.z = map_tag_tf.pose.position.y
+            # print(marker.pose)
             marker.scale.x = 0.25
             marker.scale.y = 0.25
             marker.scale.z = 0.25
