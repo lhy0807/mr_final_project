@@ -12,6 +12,6 @@
     <arg name="gui" value="true"/>
   </include>
   
-  <node pkg="gazebo_ros" type="spawn_model" name="spawn_apriltag" args="-sdf -file $(find turtlebot3_mr)/models/Apriltag36_11_00000/model.sdf -model apriltag_marker -x 3.17 -y 3.96 -z 0.54 -R -1.57 " />
+  <node pkg="gazebo_ros" type="spawn_model" name="spawn_apriltag" args="-sdf -file $(find mr_final_project)/models/Apriltag36_11_00000/model.sdf -model apriltag_marker -x 3.17 -y 3.96 -z 0.54 -R -1.57 " />
 
 </launch>
