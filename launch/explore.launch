@@ -17,6 +17,9 @@
   <!-- tag tracker node -->
   <node pkg="mr_final_project" type="tag_tracker.py" name="tag_tracker" required="true" output="screen" />
 
+  <!-- synced goal gen and tag tracker node -->
+  <!-- <node pkg="mr_final_project" type="synced_goal_tags.py" name="synced_goal_tags" required="true" output="screen" /> -->
+
   <!-- static tf publisher for laser scan data -->
   <node pkg="tf" type="static_transform_publisher" name="base_scan_transform" 
         args="0 0 0 0 0 0 1 base_link base_scan 100" />

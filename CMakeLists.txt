@@ -162,6 +162,7 @@ include_directories(
 catkin_install_python(PROGRAMS
   nodes/tag_tracker.py
   nodes/goal_gen.py
+  nodes/synced_goal_tags.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
