@@ -3,19 +3,17 @@
 import rospy
 import tf2_ros
 import tf2_geometry_msgs
-import queue
+
 from apriltag_ros.msg import AprilTagDetectionArray
 from geometry_msgs.msg import TransformStamped
 from visualization_msgs.msg import MarkerArray, Marker
-import numpy as np
 
 class TagsUpdater:
 
     def __init__(self):
         rospy.sleep(1.)
         num_tags = 20
-        self.STABLE_SIZE=10
-        self.tag_estimates = [queue.Queue(self.STABLE_SIZE) for _ in range(num_tags)]
+        self.tag_estimates = [None for _ in range(num_tags)]
         self.tags_sub = rospy.Subscriber("tag_detections", \
             AprilTagDetectionArray, self.tags_cb)
         self.vis_pub = rospy.Publisher("visualization_marker", Marker, \
@@ -52,36 +50,18 @@ class TagsUpdater:
 
             # Get transform from map to tag
             map_tag_pose = self.transform_pose(frame_tag_pose, frame, 'map')
-            if (len(self.tag_estimates[tag_id].queue) >= self.STABLE_SIZE-1):
-                self.tag_estimates[tag_id].get()
-            
-            self.tag_estimates[tag_id].put(map_tag_pose, block=False)
+            print(map_tag_pose)
+            self.tag_estimates[tag_id] = map_tag_pose
 
         for i, est in enumerate(self.tag_estimates):
-            if not est.empty():
-                position = np.zeros((3, len(self.tag_estimates[tag_id].queue)))
-                for j, pose in enumerate(self.tag_estimates[i].queue):
-                    if pose is None:
-                        continue
-                    position[0][j] = pose.position.x
-                    position[1][j] = pose.position.y
-                    position[2][j] = pose.position.z
-                
-                centroid_pose = np.mean(position, axis=1)
-                print("tag", i, ": ", centroid_pose)
-
-                if self.tag_estimates[i].queue[0] is None:
-                    continue
-
+            if est:
                 t = TransformStamped()
                 t.header.stamp = rospy.Time.now()
                 t.header.frame_id = 'map'
 
                 t.child_frame_id = 'map_tag_' + str(i)
-                t.transform.translation.x = centroid_pose[0]
-                t.transform.translation.y = centroid_pose[1]
-                t.transform.translation.z = centroid_pose[2]
-                t.transform.rotation = self.tag_estimates[i].queue[0].orientation
+                t.transform.translation = self.tag_estimates[i].position
+                t.transform.rotation = self.tag_estimates[i].orientation
                 self.tf_broadcaster.sendTransform(t)
 
                 marker = Marker()
@@ -91,9 +71,7 @@ class TagsUpdater:
                 marker.id = i
                 marker.type = marker.SPHERE
                 marker.action = marker.ADD
-                marker.pose.position.x = centroid_pose[0]
-                marker.pose.position.y = centroid_pose[1]
-                marker.pose.position.z = centroid_pose[2]
+                marker.pose = self.tag_estimates[i]
                 marker.scale.x = 0.20
                 marker.scale.y = 0.20
                 marker.scale.z = 0.20
